@@ -11,5 +11,5 @@ for row in range(sheet.nrows):  # 第一个for循环遍历所有行
     print("  * " + sheet.row(row)[2].value)
     print("  */")
     print("@JacksonXmlProperty(localName = \"" + sheet.row(row)[1].value + "\")")
-    print("private %s" % sheet.row(row)[0].value, '', end='')
-    print("%s" % sheet.row(row)[1].value, '', end='')
+    print("private %s" % sheet.row(row)[1].value, '', end='')
+    print("%s" % sheet.row(row)[0].value, '', end=';')
