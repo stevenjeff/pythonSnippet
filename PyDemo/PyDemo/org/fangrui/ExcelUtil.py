@@ -8,8 +8,8 @@ for row in range(sheet.nrows):  # 第一个for循环遍历所有行
     # for col in range(sheet.ncols):  # 第二个for循环遍历所有列，这样就找到某一个xy对应的元素，就可以打印出来
     #     print("%s" % sheet.row(row)[col].value, '\t', end='')
     print(" /*")
-    print("  * " + sheet.row(row)[2].value, '', end='')
-    print(" /*")
+    print("  * " + sheet.row(row)[2].value)
+    print("  */")
     print("@JacksonXmlProperty(localName = \"" + sheet.row(row)[1].value + "\")")
     print("private %s" % sheet.row(row)[0].value, '', end='')
     print("%s" % sheet.row(row)[1].value, '', end='')
