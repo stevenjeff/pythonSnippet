@@ -32,8 +32,11 @@ def excelProccessXlwings():
 
 
 def walkDir(dir):
-    for home, dirs, files in os.walk(dir, followlinks=False, topdown=True):
-        print(files)
+    folderlist = os.listdir(dir)  # 列举文件夹
+    for currentDir in folderlist:
+        print(currentDir)
+    # for home, dirs, files in os.walk(dir, followlinks=False, topdown=True):
+    # print(files)
         # print(dirs)
         # print(files)
         # for dir in dirs:
