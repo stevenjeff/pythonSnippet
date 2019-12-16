@@ -3,8 +3,8 @@ import time
 import shutil
 import os
 
-excelFileName = r'H:\新建文件夹\3、建安-新 - 副本 - 副本.xlsx'
-companyPath = "H:\\新建文件夹\\3.建安图片"
+excelFileName = r'D:\360Downloads\evergrande\3、建安-新 - 副本 - 副本.xlsx'
+companyPath = "D:\\360Downloads\\evergrande\\3.建安图片"
 linkColumn = 22
 totalSheetName = "汇总"
 detailsheetName = "合并明细（带合同号）"
@@ -23,18 +23,31 @@ def excelProccessXlwings():
     totalSheet = workbook.sheets[totalSheetName]
     detailSheet = workbook.sheets[detailsheetName]
     rng = totalSheet.range(range).value
+    currentCompanyIndex = 0
     for row in rng:
-        print(row[3] + "--" + row[2] + "--" + str(row[13]))
+        if row[0] is not None:
+            currentCompanyIndex = int(row[0])
+        if row[3] is None or row[2] is None or row[11] is None or row[3] == "无合同" or row[2] == "无合同" or str(
+                row[3]).strip() == "" or str(row[2]).strip() == "":
+            continue
+        print(getCompanyDir(currentCompanyIndex))
+        print(row[3] + "--" + row[2] + "--" + str(row[11]))
     # workbook.save(".\\3、建安-新 - 副本 - 副本_new1.xlsx")
     workbook.close()
     app.quit()
     print("end:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
 
-def walkDir(dir):
-    folderlist = os.listdir(dir)  # 列举文件夹
+def walkDir():
+    folderlist = os.listdir(companyPath)  # 列举文件夹
     for currentDir in folderlist:
-        print(currentDir)
+        companyDir = companyPath + "\\" + currentDir
+        if os.path.isdir(companyDir):
+            for company in os.listdir(companyDir):
+                print(companyDir + "\\" + company)
+                # if "[" in company or "]" in company or "【" in company or "】" in company:
+                #     print(companyDir +"\\"+company)
+                # shutil.rmtree(companyDir + "\\" + company)
     # for home, dirs, files in os.walk(dir, followlinks=False, topdown=True):
     # print(files)
         # print(dirs)
@@ -43,5 +56,14 @@ def walkDir(dir):
         #     print(dir)
 
 
-walkDir(companyPath)
-# excelProccessXlwings()
+def getCompanyDir(currentCompanyIndex):
+    folderlist = os.listdir(companyPath)  # 列举文件夹
+    for currentDir in folderlist:
+        companyDir = companyPath + "\\" + currentDir
+        dirs = currentDir.split("、")
+        if os.path.isdir(companyDir) and str(currentCompanyIndex) == dirs[0]:
+            return companyDir;
+
+
+# walkDir()
+excelProccessXlwings()
