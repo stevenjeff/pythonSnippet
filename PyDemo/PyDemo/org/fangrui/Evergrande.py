@@ -6,6 +6,8 @@ import os
 excelFileName = r'D:\360Downloads\evergrande\3、建安-新 - 副本 - 副本.xlsx'
 companyPath = "D:\\360Downloads\\evergrande\\3.建安图片"
 linkColumn = 22
+labelColumn = 23
+valueColumn = "L"
 totalSheetName = "汇总"
 detailsheetName = "合并明细（带合同号）"
 range = "A3:Y652"
@@ -22,17 +24,23 @@ def excelProccessXlwings():
     # 保存
     totalSheet = workbook.sheets[totalSheetName]
     detailSheet = workbook.sheets[detailsheetName]
-    rng = totalSheet.range(range).value
+    rng = totalSheet.range(range)
     currentCompanyIndex = 0
-    for row in rng:
-        if row[0] is not None:
-            currentCompanyIndex = int(row[0])
-        if row[3] is None or row[2] is None or row[11] is None or row[3] == "无合同" or row[2] == "无合同" or str(
-                row[3]).strip() == "" or str(row[2]).strip() == "":
+    for row in rng.rows:
+        if row[0].value is not None:
+            currentCompanyIndex = int(row[0].value)
+        if row[3].value is None or row[2].value is None or row[11].value is None or row[3].value == "无合同" or row[
+            2].value == "无合同" or str(
+                row[3].value).strip() == "" or str(row[2].value).strip() == "":
+            row[labelColumn].value = "无合同"
             continue
+        currentCompanyDir = getCompanyDir(currentCompanyIndex)
+        if currentCompanyDir is None:
+            continue
+        row[linkColumn].formula = '=HYPERLINK(".\\";V3)'
         print(getCompanyDir(currentCompanyIndex))
-        print(row[3] + "--" + row[2] + "--" + str(row[11]))
-    # workbook.save(".\\3、建安-新 - 副本 - 副本_new1.xlsx")
+        print(row[3].value + "--" + row[2].value + "--" + str(row[11].value))
+    workbook.save(".\\3、建安-新 - 副本 - 副本_done.xlsx")
     workbook.close()
     app.quit()
     print("end:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
