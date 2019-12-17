@@ -3,10 +3,13 @@ import time
 import shutil
 import os
 
-excelFileName = r'D:\360Downloads\evergrande\3、建安-新 - 副本 - 副本.xlsx'
-companyPath = "D:\\360Downloads\\evergrande\\3.建安图片"
+rootPath = "D:\\360Downloads\\evergrande\\"
+excelName = "3、建安-新 - 副本 - 副本.xlsx"
+excelNameReName = "3、建安-新 - 副本 - 副本_done.xlsx"
+projectName = "3.建安图片"
+projectRoot = rootPath + projectName
 linkColumn = 22
-labelColumn = 23
+labelColumn = 24
 valueColumn = "L"
 totalSheetName = "汇总"
 detailsheetName = "合并明细（带合同号）"
@@ -20,7 +23,7 @@ def excelProccessXlwings():
 
     app = xw.App(visible=ifVisible, add_book=False)
     # 连接到excel
-    workbook = app.books.open(excelFileName)  # 连接excel文件
+    workbook = app.books.open(rootPath + excelName)  # 连接excel文件
     # 保存
     totalSheet = workbook.sheets[totalSheetName]
     detailSheet = workbook.sheets[detailsheetName]
@@ -34,44 +37,46 @@ def excelProccessXlwings():
                 row[3].value).strip() == "" or str(row[2].value).strip() == "":
             row[labelColumn].value = "无合同"
             continue
-        currentCompanyDir = getCompanyDir(currentCompanyIndex)
-        if currentCompanyDir is None:
+        companyNameDir = getCompanyDir(currentCompanyIndex)
+        if companyNameDir is None:
             continue
-        row[linkColumn].formula = '=HYPERLINK(".\\";V3)'
+        currentCompanyDir = projectRoot + "\\" + companyNameDir
+        row[linkColumn].formula = '=HYPERLINK(".\\' + projectName + '\\' + companyNameDir + '",' + valueColumn + str(
+            row.row) + ')'
         print(getCompanyDir(currentCompanyIndex))
         print(row[3].value + "--" + row[2].value + "--" + str(row[11].value))
-    workbook.save(".\\3、建安-新 - 副本 - 副本_done.xlsx")
+    workbook.save(rootPath + excelNameReName)
     workbook.close()
     app.quit()
     print("end:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
 
 def walkDir():
-    folderlist = os.listdir(companyPath)  # 列举文件夹
+    folderlist = os.listdir(projectRoot)  # 列举文件夹
     for currentDir in folderlist:
-        companyDir = companyPath + "\\" + currentDir
+        companyDir = projectRoot + "\\" + currentDir
         if os.path.isdir(companyDir):
             for company in os.listdir(companyDir):
                 print(companyDir + "\\" + company)
-                # if "[" in company or "]" in company or "【" in company or "】" in company:
-                #     print(companyDir +"\\"+company)
-                # shutil.rmtree(companyDir + "\\" + company)
-    # for home, dirs, files in os.walk(dir, followlinks=False, topdown=True):
-    # print(files)
-        # print(dirs)
-        # print(files)
-        # for dir in dirs:
-        #     print(dir)
-
 
 def getCompanyDir(currentCompanyIndex):
-    folderlist = os.listdir(companyPath)  # 列举文件夹
+    folderlist = os.listdir(projectRoot)  # 列举文件夹
     for currentDir in folderlist:
-        companyDir = companyPath + "\\" + currentDir
+        companyDir = projectRoot + "\\" + currentDir
         dirs = currentDir.split("、")
         if os.path.isdir(companyDir) and str(currentCompanyIndex) == dirs[0]:
-            return companyDir;
+            return currentDir;
 
 
 # walkDir()
 excelProccessXlwings()
+
+# if "[" in company or "]" in company or "【" in company or "】" in company:
+#     print(companyDir +"\\"+company)
+# shutil.rmtree(companyDir + "\\" + company)
+# for home, dirs, files in os.walk(dir, followlinks=False, topdown=True):
+# print(files)
+# print(dirs)
+# print(files)
+# for dir in dirs:
+#     print(dir)
