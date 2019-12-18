@@ -72,7 +72,7 @@ def copyFiles(companyNameDir, contractNo, contractMoneyDir, detailSheet):
         contractName = contractNoReplace(contractNo)
         if contractName in dircontractName:
             shutil.copytree(contractDir + currentDir, contractMoneyDirFullPath)
-
+    # 拷贝凭证
 
 def contractNoReplace(contractNo):
     return contractNo.replace("[", "").replace("]", "").replace("【", "").replace("】", "")
