@@ -1,7 +1,8 @@
-import xlwings as xw
-import time
-import shutil
 import os
+import shutil
+import time
+
+import xlwings as xw
 
 rootPath = "D:\\360Downloads\\evergrande\\"
 excelName = "3、建安-新 - 副本 - 副本.xlsx"
@@ -61,15 +62,16 @@ def excelProccessXlwings():
 
 def copyFiles(companyNameDir, contractNo, contractMoneyDir, detailSheet):
     currentCompanyDir = projectRoot + "\\" + companyNameDir + "\\"
-    contractDir = currentCompanyDir + companyNameDir.split("、")[1].strip()
+    contractDir = currentCompanyDir + companyNameDir.split("、")[1].strip() = "\\"
     contractMoneyDirFullPath = projectRoot + "\\" + companyNameDir + "\\" + contractMoneyDir
     os.mkdir(contractMoneyDirFullPath)
     folderlist = os.listdir(contractDir)  # 列举文件夹
+    # 拷贝合同
     for currentDir in folderlist:
         dircontractName = contractNoReplace(currentDir)
         contractName = contractNoReplace(contractNo)
         if contractName in dircontractName:
-            shutil.copytree()
+            shutil.copytree(contractDir + currentDir, contractMoneyDirFullPath)
 
 
 def contractNoReplace(contractNo):
