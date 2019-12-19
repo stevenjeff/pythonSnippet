@@ -86,17 +86,42 @@ def copyFiles(companyNameDir, contractNo, contractMoneyDir, detailSheet):
         if detailContractNo is None or detailContractNo == '':
             proccessNoContractVoucher()
             continue
-        year = row[yearIndexDetail]
-        month = row[monthIndexDetail]
-        voucherNo = row[voucherIndexdetail]
+        copyVoucher(detailSheet, detailContractNo, contractMoneyDirFullPath)
 
 
-def getMatchVoucherDir(year, month, voucherNo, currentCompanyDir):
-    voucherDir = currentCompanyDir + voucherDirName
+def copyVoucher(detailSheet, contractNo, contractMoneyDirFullPath):
+    rng = detailSheet.range(detailRange)
+    for row in rng.rows:
+        detailContractNo = row[contractNoIndexDetail]
+        if detailContractNo is None or detailContractNo == '':
+            proccessNoContractVoucher()
+            continue
+        if contractNo == detailContractNo:
+            year = row[yearIndexDetail]
+            month = row[monthIndexDetail]
+            voucherStrNo = row[voucherIndexdetail]
+            foundVoucherDir = getMatchVoucherDir(int(year), int(month), voucherStrNo, currentCompanyDir)
+            if foundVoucherDir == "":
+                continue
+            shutil.copytree(foundVoucherDir, contractMoneyDirFullPath)
+
+
+def getMatchVoucherDir(year, month, voucherStrNo, currentCompanyDir):
+    voucherStrArray = voucherStrNo.split("-");
+    voucherNumStr = voucherStrArray[1]
+    voucherNo = int(voucherNumStr)
+    voucherDir = currentCompanyDir + voucherDirName + "\\"
     if not os.path.exists(voucherDir):
         return ""
     voucherfolderlist = os.listdir(voucherDir)  # 列举文件夹
     for currentDir in voucherfolderlist:
+        voucherDirArray = currentDir.split("-")
+        voucherYearFromDir = int(voucherDirArray[0])
+        voucherMonthFromDir = int(voucherDirArray[1])
+        voucherNoFromDir = int(voucherDirArray[2])
+        if year == voucherYearFromDir and month == voucherMonthFromDir and voucherNo == voucherNoFromDir:
+            return voucherDir + currentDir
+    return ""
 
 
 def voucherCompare(year, month, voucherNo, currentDir):
