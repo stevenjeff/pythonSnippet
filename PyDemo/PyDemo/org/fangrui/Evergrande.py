@@ -18,7 +18,7 @@ labelColumn = 24
 valueColumn = "L"
 contractNoIndex = 3
 # 明细合同列
-contractNoIndexDetail = 22
+contractNoIndexDetail = 20
 # 明细年
 yearIndexDetail = 0
 # 明细月
@@ -55,7 +55,7 @@ def excelProccessXlwings():
         if companyNameDir is None:
             continue
         contractMoneyDir = row[3].value + "--" + row[2].value + "--" + str(row[11].value)
-        copyFiles(companyNameDir, row[contractNoIndex], contractMoneyDir, detailSheet)
+        copyFiles(companyNameDir, row[contractNoIndex].value, contractMoneyDir, detailSheet)
         row[linkColumn].formula = '=HYPERLINK(".\\' + projectName + '\\' + companyNameDir + '",' + valueColumn + str(
             row.row) + ')'
         print(getCompanyDir(currentCompanyIndex))
@@ -69,27 +69,42 @@ def excelProccessXlwings():
 def copyFiles(companyNameDir, contractNo, contractMoneyDir, detailSheet):
     currentCompanyDir = projectRoot + "\\" + companyNameDir + "\\"
     contractDir = currentCompanyDir + companyNameDir.split("、")[1].strip() + "\\"
+    voucherDir = currentCompanyDir + voucherDirName + "\\"
     contractMoneyDirFullPath = projectRoot + "\\" + companyNameDir + "\\" + contractMoneyDir
     if not os.path.exists(contractMoneyDirFullPath):
         os.mkdir(contractMoneyDirFullPath)
+    # 拷贝合同
+    copyContract(contractDir, contractNo, contractMoneyDirFullPath)
+    # 拷贝凭证
+    copyVoucher(detailSheet, contractMoneyDirFullPath, voucherDir)
+
+
+def copyContract(contractDir, contractNo, contractMoneyDirFullPath):
+    if not os.path.exists(contractDir):
+        return
     contractfolderlist = os.listdir(contractDir)  # 列举文件夹
     # 拷贝合同
     for currentDir in contractfolderlist:
         dircontractName = contractNoReplace(currentDir)
         contractName = contractNoReplace(contractNo)
         if contractName in dircontractName:
-            shutil.copytree(contractDir + currentDir, contractMoneyDirFullPath)
-    # 拷贝凭证
+            if os.path.isdir(contractDir + currentDir):
+                shutil.copytree(contractDir + currentDir, contractMoneyDirFullPath)
+            else:
+                shutil.copy(contractDir + currentDir, contractMoneyDirFullPath)
+
+
+def copyVoucher(detailSheet, contractMoneyDirFullPath, voucherDir):
     rng = detailSheet.range(detailRange)
     for row in rng.rows:
-        detailContractNo = row[contractNoIndexDetail]
+        detailContractNo = row[contractNoIndexDetail].value
         if detailContractNo is None or detailContractNo == '':
             proccessNoContractVoucher()
             continue
-        copyVoucher(detailSheet, detailContractNo, contractMoneyDirFullPath)
+        copyVoucherInternal(detailSheet, detailContractNo, contractMoneyDirFullPath, voucherDir)
 
 
-def copyVoucher(detailSheet, contractNo, contractMoneyDirFullPath):
+def copyVoucherInternal(detailSheet, contractNo, contractMoneyDirFullPath, voucherDir):
     rng = detailSheet.range(detailRange)
     for row in rng.rows:
         detailContractNo = row[contractNoIndexDetail]
@@ -100,17 +115,16 @@ def copyVoucher(detailSheet, contractNo, contractMoneyDirFullPath):
             year = row[yearIndexDetail]
             month = row[monthIndexDetail]
             voucherStrNo = row[voucherIndexdetail]
-            foundVoucherDir = getMatchVoucherDir(int(year), int(month), voucherStrNo, currentCompanyDir)
+            foundVoucherDir = getMatchVoucherDir(int(year), int(month), voucherStrNo, voucherDir)
             if foundVoucherDir == "":
                 continue
             shutil.copytree(foundVoucherDir, contractMoneyDirFullPath)
 
 
-def getMatchVoucherDir(year, month, voucherStrNo, currentCompanyDir):
+def getMatchVoucherDir(year, month, voucherStrNo, voucherDir):
     voucherStrArray = voucherStrNo.split("-");
     voucherNumStr = voucherStrArray[1]
     voucherNo = int(voucherNumStr)
-    voucherDir = currentCompanyDir + voucherDirName + "\\"
     if not os.path.exists(voucherDir):
         return ""
     voucherfolderlist = os.listdir(voucherDir)  # 列举文件夹
@@ -122,12 +136,6 @@ def getMatchVoucherDir(year, month, voucherStrNo, currentCompanyDir):
         if year == voucherYearFromDir and month == voucherMonthFromDir and voucherNo == voucherNoFromDir:
             return voucherDir + currentDir
     return ""
-
-
-def voucherCompare(year, month, voucherNo, currentDir):
-    possibleVoucherDirName = ""
-    possibleVoucherDirName = str(year) + "年" + str(month) + "月"
-
 
 def proccessNoContractVoucher():
     return
@@ -143,6 +151,7 @@ def walkDir():
             for company in os.listdir(companyDir):
                 print(companyDir + "\\" + company)
 
+
 def getCompanyDir(currentCompanyIndex):
     folderlist = os.listdir(projectRoot)  # 列举文件夹
     for currentDir in folderlist:
@@ -152,7 +161,9 @@ def getCompanyDir(currentCompanyIndex):
             return currentDir;
 
 
-# walkDir()
+# def test():
+#     os.listdir("D:\\360Downloads\\evergrande\\3.建安图片\\1、 奥的斯电梯（中国）有限公司\\奥的斯电梯（中国）有限公司")
+# test()
 excelProccessXlwings()
 
 # if "[" in company or "]" in company or "【" in company or "】" in company:
