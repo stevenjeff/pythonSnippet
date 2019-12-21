@@ -24,7 +24,7 @@ yearIndexDetail = 0
 # 明细月
 monthIndexDetail = 1
 # 凭证号
-voucherIndexdetail = 2
+voucherIndexdetail = 3
 totalSheetName = "汇总"
 detailsheetName = "合并明细（带合同号）"
 ifVisible = False
@@ -56,7 +56,8 @@ def excelProccessXlwings():
             continue
         contractMoneyDir = row[3].value + "--" + row[2].value + "--" + str(row[11].value)
         copyFiles(companyNameDir, row[contractNoIndex].value, contractMoneyDir, detailSheet)
-        row[linkColumn].formula = '=HYPERLINK(".\\' + projectName + '\\' + companyNameDir + '",' + valueColumn + str(
+        row[
+            linkColumn].formula = '=HYPERLINK(".\\' + projectName + '\\' + companyNameDir + '\\' + contractMoneyDir + '",' + valueColumn + str(
             row.row) + ')'
         # print(getCompanyDir(currentCompanyIndex))
         # print(row[3].value + "--" + row[2].value + "--" + str(row[11].value))
@@ -106,19 +107,21 @@ def copyVoucher(detailSheet, contractMoneyDirFullPath, voucherDir, contractNameF
         if detailContractNo is None or detailContractNo == '':
             proccessNoContractVoucher()
             continue
-        if contractNameFromTotal == detailContractNo:
+        formatdetailContractNo = contractNoReplace(detailContractNo);
+        formatcontractNameFromTotal = contractNoReplace(contractNameFromTotal);
+        if formatdetailContractNo == formatcontractNameFromTotal:
             copyVoucherInternal(row, contractMoneyDirFullPath, voucherDir)
 
 
 def copyVoucherInternal(row, contractMoneyDirFullPath, voucherDir):
-    year = row[yearIndexDetail]
-    month = row[monthIndexDetail]
-    voucherStrNo = row[voucherIndexdetail]
+    year = row[yearIndexDetail].value
+    month = row[monthIndexDetail].value
+    voucherStrNo = row[voucherIndexdetail].value
     foundVoucherDir = getMatchVoucherDir(int(year), int(month), voucherStrNo, voucherDir)
     if foundVoucherDir == "":
         return
-    print("拷贝凭证号:", voucherStrNo, " 凭证路径：", foundVoucherDir)
-    shutil.copytree(foundVoucherDir, contractMoneyDirFullPath)
+    print("拷贝凭证号:", voucherStrNo, " 凭证路径：", voucherDir + foundVoucherDir)
+    shutil.copytree(voucherDir + foundVoucherDir, contractMoneyDirFullPath + "\\" + foundVoucherDir)
 
 
 def getMatchVoucherDir(year, month, voucherStrNo, voucherDir):
@@ -134,7 +137,7 @@ def getMatchVoucherDir(year, month, voucherStrNo, voucherDir):
         voucherMonthFromDir = int(voucherDirArray[1])
         voucherNoFromDir = int(voucherDirArray[2])
         if year == voucherYearFromDir and month == voucherMonthFromDir and voucherNo == voucherNoFromDir:
-            return voucherDir + currentDir
+            return currentDir
     return ""
 
 def proccessNoContractVoucher():
