@@ -72,6 +72,7 @@ def excelProccessXlwings():
             contract_name_index].value == "无合同" or str(
             row[contractNoIndex].value).strip() == "" or str(row[contract_name_index].value).strip() == "":
             row[labelColumn].value = "无合同"
+            row.color = (255, 0, 0)
             continue
         companyNameDir = getCompanyDir(currentCompanyIndex)
         if companyNameDir is None:
@@ -165,6 +166,8 @@ def copyVoucherInternal(row, contractMoneyDirFullPath, voucherDir, voucherCopied
         return
     print("拷贝凭证号:", voucherStrNo, " 凭证路径：", voucherDir + foundVoucherDir)
     voucherCopiedInstance.copiedVoucherFolderNames.add(foundVoucherDir)
+    if os.path.exists(contractMoneyDirFullPath + "\\" + foundVoucherDir):
+        return
     shutil.copytree(voucherDir + foundVoucherDir, contractMoneyDirFullPath + "\\" + foundVoucherDir)
 
 
