@@ -141,7 +141,8 @@ def copyContract(contractDir, optionalContractDir, contractNo, contractMoneyDirF
                 if not os.path.exists(contractMoneyDirFullPath + "\\" + currentDir):
                     shutil.copytree(actual_contract_dir + currentDir, contractMoneyDirFullPath + "\\" + currentDir)
             else:
-                shutil.copy(actual_contract_dir + currentDir, contractMoneyDirFullPath)
+                if not os.path.exists(contractMoneyDirFullPath + "\\" + currentDir):
+                    shutil.copy(actual_contract_dir + currentDir, contractMoneyDirFullPath)
                 # 拷贝凭证
             print("拷贝凭证 begin:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
             copyVoucher(detailSheet, contractMoneyDirFullPath, voucherDir, contractName, voucherCopiedInstance)
