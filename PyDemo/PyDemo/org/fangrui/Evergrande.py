@@ -83,6 +83,8 @@ def excelProccessXlwings():
         row[
             linkColumn].formula = '=HYPERLINK(".\\' + projectName + '\\' + companyNameDir + '\\' + contractMoneyDir + '",' + valueColumn + str(
             row.row) + ')'
+        # 写一行存一次不知道性能是否 影响很大
+        # workbook.save(rootPath + excelNameReName)
         # print(getCompanyDir(currentCompanyIndex))
         # print(row[3].value + "--" + row[2].value + "--" + str(row[11].value))
     workbook.save(rootPath + excelNameReName)
@@ -98,8 +100,9 @@ def proccessNoContractVoucherFolder(voucherCopied):
             if voucherDirname not in voucherCopied.copiedVoucherFolderNames:
                 if not os.path.exists(voucherCopied.companyNameDir + notContractvoucherDirName):
                     os.mkdir(voucherCopied.companyNameDir + notContractvoucherDirName)
-                shutil.copytree(voucherCopied.voucherDir + voucherDirname,
-                                voucherCopied.companyNameDir + notContractvoucherDirName + "\\" + voucherDirname)
+                if not os.path.exists(voucherCopied.companyNameDir + notContractvoucherDirName + "\\" + voucherDirname):
+                    shutil.copytree(voucherCopied.voucherDir + voucherDirname,
+                                    voucherCopied.companyNameDir + notContractvoucherDirName + "\\" + voucherDirname)
 
 
 def copyFiles(companyNameDir, contractNo, contractMoneyDir, detailSheet, voucherCopiedInstance):
@@ -135,7 +138,8 @@ def copyContract(contractDir, optionalContractDir, contractNo, contractMoneyDirF
         contractName = contractNoReplace(contractNo)
         if contractName in dircontractName:
             if os.path.isdir(actual_contract_dir + currentDir):
-                shutil.copytree(actual_contract_dir + currentDir, contractMoneyDirFullPath + "\\" + currentDir)
+                if not os.path.exists(contractMoneyDirFullPath + "\\" + currentDir):
+                    shutil.copytree(actual_contract_dir + currentDir, contractMoneyDirFullPath + "\\" + currentDir)
             else:
                 shutil.copy(actual_contract_dir + currentDir, contractMoneyDirFullPath)
                 # 拷贝凭证
