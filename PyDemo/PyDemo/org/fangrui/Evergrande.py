@@ -89,7 +89,7 @@ def excelProccessXlwings():
             row[carrying_cost_index].value)
         copyFiles(companyNameDir, row[contractNoIndex].value, contractMoneyDir, detailSheet, voucherCopiedInstance)
         row[
-            linkColumn].formula = '=HYPERLINK(".\\' + projectName + '\\' + companyNameDir + '\\' + contractMoneyDir + '",' + valueColumn + str(
+            linkColumn].formula = '=HYPERLINK("..\\' + projectName + '\\' + companyNameDir + '\\' + contractMoneyDir + '",' + valueColumn + str(
             row.row) + ')'
         # 写一行存一次不知道性能是否 影响很大
         # workbook.save(rootPath + excelNameReName)
