@@ -108,7 +108,7 @@ def proccessNoContractVoucherFolder(voucherCopied):
 def copyFiles(companyNameDir, contractNo, contractMoneyDir, detailSheet, voucherCopiedInstance):
     currentCompanyDir = projectRoot + "\\" + companyNameDir + "\\"
     contractDir = currentCompanyDir + companyNameDir.split("、")[1].strip() + "\\"
-    optionalContractDir = currentCompanyDir + optionalContractFolderName
+    optionalContractDir = currentCompanyDir + optionalContractFolderName + "\\"
     voucherDir = currentCompanyDir + voucherDirName + "\\"
     voucherCopiedInstance.voucherDir = voucherDir
     voucherCopiedInstance.companyNameDir = currentCompanyDir
