@@ -12,8 +12,9 @@ excelName = "3、建安-新 - 副本 - 副本.xlsx"
 excelNameReName = "3、建安-新 - 副本 - 副本_done.xlsx"
 # 被操作文件夹
 projectName = "3.建安图片"
+# projectRoot
 projectRoot = rootPath + projectName
-# excel 操作是否课件
+# excel 操作是否可见
 ifVisible = False
 
 # 汇总配置
@@ -21,11 +22,17 @@ ifVisible = False
 totalSheetName = "汇总"
 # 汇总excel范围
 sumRange = "A3:Y652"
+# excel 中 数字 文件夹链接所在列
 linkColumn = 22
+# 标记无合同 所在列
 labelColumn = 24
+# 取账面成本所在列 字母号
 valueColumn = "L"
+# 索引列
 serial_no_column_index = 0
+# 合同编号所在列
 contractNoIndex = 3
+# 合同名所在列
 contract_name_index = 2
 # 账面进成本列
 carrying_cost_index = 11
@@ -42,8 +49,9 @@ yearIndexDetail = 0
 monthIndexDetail = 1
 # 凭证号
 voucherIndexdetail = 3
-
+# 凭证文件夹名称
 voucherDirName = "凭证"
+# 没有合同对应的凭证所在文件夹
 notContractvoucherDirName = "无合同"
 # 合同文件夹可选名称
 optionalContractFolderName = "合同"
@@ -224,10 +232,6 @@ class VoucherCopied:
         self.voucherDir = voucherDir
         self.companyNameDir = companyNameDir
 
-
-# def test():
-#     os.listdir("D:\\360Downloads\\evergrande\\3.建安图片\\1、 奥的斯电梯（中国）有限公司\\奥的斯电梯（中国）有限公司")
-# test()
 excelProccessXlwings()
 
 # if "[" in company or "]" in company or "【" in company or "】" in company:
