@@ -74,6 +74,9 @@ def excelProccessXlwings():
             currentCompanyIndex = int(row[serial_no_column_index].value)
             proccessNoContractVoucherFolder(voucherCopiedInstance)
             voucherCopiedInstance = VoucherCopied(set(), "", "")
+        companyNameDir = getCompanyDir(currentCompanyIndex)
+        if companyNameDir is None:
+            continue
         if row[contractNoIndex].value is None or row[contract_name_index].value is None or row[
             carrying_cost_index].value is None or row[
             contractNoIndex].value == "无合同" or row[
@@ -81,9 +84,9 @@ def excelProccessXlwings():
             row[contractNoIndex].value).strip() == "" or str(row[contract_name_index].value).strip() == "":
             row[labelColumn].value = "无合同"
             row.color = (255, 0, 0)
-            continue
-        companyNameDir = getCompanyDir(currentCompanyIndex)
-        if companyNameDir is None:
+            row[
+                linkColumn].formula = '=HYPERLINK("..\\' + projectName + '\\' + companyNameDir + '\\' + '",' + valueColumn + str(
+                row.row) + ')'
             continue
         contractMoneyDir = row[contractNoIndex].value + "--" + row[contract_name_index].value + "--" + str(
             row[carrying_cost_index].value)
