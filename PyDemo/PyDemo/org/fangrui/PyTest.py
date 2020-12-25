@@ -1,5 +1,5 @@
 '''
-@author: admin test test2dd
+@author: admin test
 '''
 from _collections import defaultdict
 from string import Template
